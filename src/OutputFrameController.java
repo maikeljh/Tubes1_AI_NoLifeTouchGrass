@@ -51,6 +51,7 @@ public class OutputFrameController {
     private int roundsLeft;
     private boolean isBotFirst;
     private Bot bot;
+    private String pickedAlgorithm;
 
 
     private static final int ROW = 8;
@@ -69,15 +70,16 @@ public class OutputFrameController {
      * @param isBotFirst True if bot is first, false otherwise.
      *
      */
-    void getInput(String name1, String name2, String rounds, boolean isBotFirst){
+    void getInput(String name1, String name2, String rounds, boolean isBotFirst, String pickedAlgorithm){
         this.playerXName.setText(name1);
         this.playerOName.setText(name2);
         this.roundsLeftLabel.setText(rounds);
         this.roundsLeft = Integer.parseInt(rounds);
         this.isBotFirst = isBotFirst;
+        this.pickedAlgorithm = pickedAlgorithm;
 
         // Start bot
-        this.bot = new Bot();
+        this.bot = new Bot(this.pickedAlgorithm);
         this.playerXTurn = !isBotFirst;
         if (this.isBotFirst) {
             this.moveBot();
@@ -353,7 +355,7 @@ public class OutputFrameController {
     }
 
     private void moveBot() {
-        int[] botMove = this.bot.move();
+        int[] botMove = this.bot.move(this.playerXScore, this.playerOScore, this.roundsLeft, this.buttons);
         int i = botMove[0];
         int j = botMove[1];
 
