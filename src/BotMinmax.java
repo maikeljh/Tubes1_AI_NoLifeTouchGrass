@@ -1,21 +1,22 @@
 import javafx.scene.control.Button;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.util.Pair;
 
 public class BotMinmax extends Bot {
-    public int minimax_search(Node node, int depth, int alpha, int beta, int playerXScore, int playerOScore){
+    public int minimax_search(NodeMinmax node, int depth, int alpha, int beta, int playerXScore, int playerOScore){
         
-        if (depth == 0){
+        if (depth == 10){
             return objective_function(playerXScore, playerOScore);
         }
 
         if (node.botTurn){
             int best = Integer.MIN_VALUE;
-            for (Node child : node.children){
-                int score = minimax_search(child, depth - 1, alpha, beta, playerXScore, playerOScore);
+            for (NodeMinmax child : node.children){
+                int score = minimax_search(child, depth + 1, alpha, beta, playerXScore, playerOScore);
                 best = Math.max(best, score);
                 alpha = Math.max(alpha, best);
-                if (beta <= alpha){
+                if (alpha >= beta){
                     break;
                 }
             }
@@ -24,10 +25,10 @@ public class BotMinmax extends Bot {
 
         else{
             int best = Integer.MAX_VALUE;
-            for (Node child : node.children){
-                int score = minimax_search(child, depth - 1, alpha, beta, playerXScore, playerOScore);
-                best = Math.max(best, score);
-                alpha = Math.max(beta, best);
+            for (NodeMinmax child : node.children){
+                int score = minimax_search(child, depth + 1, alpha, beta, playerXScore, playerOScore);
+                best = Math.min(best, score);
+                alpha = Math.min(beta, best);
                 if (alpha >= beta){
                     break;
                 }
@@ -37,9 +38,12 @@ public class BotMinmax extends Bot {
 
     }
 
-    public Node getBestMove(Node node, int playerXScore, int playerOScore){
-        Node bestChild = null;
+    public NodeMinmax getBestMove(NodeMinmax node, int playerXScore, int playerOScore){
+        NodeMinmax bestChild = null;
         int best;
+
+        node.generateChildren();
+
         if (node.botTurn){
             best = Integer.MIN_VALUE;
         }
@@ -47,8 +51,8 @@ public class BotMinmax extends Bot {
             best = Integer.MAX_VALUE;
         }
 
-        for (Node child : node.children){
-            int score = minimax_search(child, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, playerXScore, playerOScore);
+        for (NodeMinmax child : node.children){
+            int score = minimax_search(child, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, playerXScore, playerOScore);
             if ((node.botTurn && score > best) || (!node.botTurn && score < best)){
                 bestChild = child;
                 best = score;
@@ -59,71 +63,53 @@ public class BotMinmax extends Bot {
 
 
     public int[] move(int playerXScore, int playerOScore, int roundsLeft, Button[][] buttons) {
-        // Create temporary board array for search
         char[][] board = new char[buttons.length][buttons[0].length];
         for (int i = 0; i < buttons.length; i++) {
-            for (int j = 0; j < buttons[i].length; j++) {
-                board[i][j] = buttons[i][j].getText().charAt(0);
+            for (int j = 0; j < buttons[0].length; j++) {
+                String buttonText = buttons[i][j].getText();
+                if (buttonText.isEmpty()) {
+                    board[i][j] = ' ';
+                } else {
+                    board[i][j] = buttonText.charAt(0);
+                }
             }
         }
-        Node node = new Node(board, true);
-        Node bestMoveNode = getBestMove(node, playerXScore, playerOScore);
+        NodeMinmax node = new NodeMinmax(board, true);
+        NodeMinmax bestMoveNode = getBestMove(node, playerXScore, playerOScore);
 
         int[] bestMove = new int[2];
+        char[][] tempBoard = new char[board.length][board[0].length];
 
         for (int i = 0; i < buttons.length; i++) {
-            for (int j = 0; j < buttons[i].length; j++) {
-                if (buttons[i][j].getText().charAt(0) != bestMoveNode.board[i][j]) {
+            for (int j = 0; j < buttons[0].length; j++) {
+                String buttonText = buttons[i][j].getText();
+                // if(!buttonText.isEmpty()){
+                //     System.out.print(buttonText.charAt(0));
+                //     System.out.println("--------");
+                // }
+                // System.out.print(bestMoveNode.board[i][j]);
+                // System.out.print(i);
+                // System.out.print(j);
+                if (!buttonText.isEmpty() && buttonText.charAt(0) != bestMoveNode.board[i][j]) {
                     bestMove[0] = i;
                     bestMove[1] = j;
+
+                    Pair currentCoor = new Pair(i, j);
+                    if(bestMoveNode.botTurn) {
+                        tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'O';
+                        checkAdjacency(tempBoard, currentCoor, "Bot");
+                    } else {
+                        tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'X';
+                        checkAdjacency(tempBoard, currentCoor, "Player");
+                    }
+    
+                    buttons[i][j].setDisable(true);
                 }
             }
         }
-
+        System.out.println(bestMove[0]);
+        System.out.println(bestMove[1]);
         return bestMove;
-    }
-
-}
-class Node{
-    public char[][] board;
-    public boolean botTurn;
-    public List<Node> children;
-    public Integer score;
-
-    public Node(char[][] board, boolean botTurn){
-        this.board = board;
-        this.botTurn = botTurn;
-        this.children = new ArrayList<Node>();
-        this.score = null;
-    }
-
-    public void generateChildren(){
-        for (int i = 0; i< board.length; i++){
-            for (int j = 0; j<board[0].length; j++){
-                if (board[i][j] == ' '){
-                    char[][] newBoard = copyBoard(board);
-                    newBoard[i][j] = botTurn ? 'O' : 'X';
-                    Node newNode = new Node(newBoard, !botTurn);
-                    children.add(newNode);
-                }
-
-                if (children.size() >= 10){
-                    return;
-                }
-            }
-        }
-    }
-
-    private char[][] copyBoard(char[][] originalBoard){
-        int rows = originalBoard.length;
-        int cols = originalBoard[0].length;
-        char[][] copy = new char[rows][cols];
-        for (int i = 0; i< rows; i++){
-            for (int j = 0; j< cols; j++){
-                copy[i][j] = originalBoard[i][j];
-            }
-        }
-        return copy;
     }
 
 }

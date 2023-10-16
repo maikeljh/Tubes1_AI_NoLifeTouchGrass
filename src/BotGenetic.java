@@ -6,8 +6,8 @@ import javafx.util.Pair;
 public class BotGenetic extends Bot {
     public int[] genetic_search(char[][] board, int roundsLeft){
         // Constants
-        int population_size = 10;
-        int cycles = 10;
+        int population_size = 1000;
+        int cycles = 1000;
         double[] roulette = new double[population_size];
 
         // Generate population
@@ -51,11 +51,11 @@ public class BotGenetic extends Bot {
                 while(random > roulette[choosenIdx]) {
                     choosenIdx++;
                 }
-                newPop[i] = pop[choosenIdx];
+                newPop[j] = pop[choosenIdx];
             }
 
             // Crossover
-            Random random = new Random();
+            Random random = new Random(System.currentTimeMillis());
             int idxCross = random.nextInt(roundsLeft);
             for(int j = 1; j < population_size; j+=2){
                 newPop[j-1].swapEncode(newPop[j], idxCross);
@@ -64,7 +64,7 @@ public class BotGenetic extends Bot {
             // Mutation
             int idxMutation = random.nextInt(roundsLeft);
             for(int j = 0; j < population_size; j++){
-                int randomNumber = random.nextInt(newPop[j].getSize() - idxMutation);
+                int randomNumber = random.nextInt(newPop[j].getSize() - idxMutation) + 1;
                 newPop[j].setEncode(randomNumber, idxMutation);
             }
 
@@ -98,7 +98,12 @@ public class BotGenetic extends Bot {
         char[][] board = new char[buttons.length][buttons[0].length];
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
-                board[i][j] = buttons[i][j].getText().charAt(0);
+                String buttonText = buttons[i][j].getText();
+                if (buttonText.isEmpty()) {
+                    board[i][j] = ' ';
+                } else {
+                    board[i][j] = buttonText.charAt(0);
+                }
             }
         }
 
@@ -123,16 +128,21 @@ public class BotGenetic extends Bot {
 
     public int fitness_function(char[][] board, Population population){
         int[] encode = population.getEncode();
-//        char[][] tempBoard = Arrays.copyof()
+        char[][] tempBoard = new char[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                tempBoard[i][j] = board[i][j];
+            }
+        }
         // Simulate game based on population representation
         for(int i = 0; i < population.getSize(); i++){
-            Pair currentCoor = this.getCoordinate(board, encode[i]);
+            Pair currentCoor = this.getCoordinate(tempBoard, encode[i]);
             if(i % 2 == 0) {
-                board[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'O';
-                checkAdjacency(board, currentCoor, "Bot");
+                tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'O';
+                checkAdjacency(tempBoard, currentCoor, "Bot");
             } else {
-                board[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'X';
-                checkAdjacency(board, currentCoor, "Player");
+                tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'X';
+                checkAdjacency(tempBoard, currentCoor, "Player");
             }
         }
 
@@ -141,7 +151,7 @@ public class BotGenetic extends Bot {
         int playerXScore = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(board[i][j] == 'O'){
+                if(tempBoard[i][j] == 'O'){
                     playerOScore++;
                 } else {
                     playerXScore++;
@@ -172,10 +182,10 @@ class Population {
 
     // Methods
     public void randomize() {
-        Random random = new Random();
+        Random random = new Random(System.currentTimeMillis());
 
         for(int i = 0; i < this.size; i++){
-            this.encode[i] = random.nextInt(size - i);
+            this.encode[i] = random.nextInt(this.size - i) + 1;
         }
     }
 
