@@ -79,7 +79,14 @@ public class OutputFrameController {
         this.pickedAlgorithm = pickedAlgorithm;
 
         // Start bot
-        this.bot = new Bot(this.pickedAlgorithm);
+        if(this.pickedAlgorithm.equals("Minimax")){
+//            this.bot = new BotMinimax();
+        } else if(this.pickedAlgorithm.equals("Beam Search")){
+//            this.bot = new BotBeamSearch();
+        } else {
+            this.bot = new BotGenetic();
+        }
+
         this.playerXTurn = !isBotFirst;
         if (this.isBotFirst) {
             this.moveBot();
