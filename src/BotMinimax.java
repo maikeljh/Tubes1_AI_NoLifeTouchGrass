@@ -8,14 +8,14 @@ public class BotMinimax extends Bot {
 
     public int minimax_search(char[][] board, int depth, int alpha, int beta, int playerXScore, int playerOScore, boolean botTurn){
         int[] tempScore;
-        int objectiveFunctionValue = objective_function(playerXScore, playerOScore);
-        int evaluateValue = evaluate(board, playerXScore, playerOScore);
+        // int objectiveFunctionValue = objective_function(playerXScore, playerOScore);
+        // int evaluateValue = evaluate(board, playerXScore, playerOScore);
         int row = board.length;
         int col = board[0].length;
 
 
-        if (objectiveFunctionValue > 7 || depth == 4){
-            return objectiveFunctionValue;
+        if (depth == 4){
+            return objective_function(playerXScore, playerOScore);
         }
 
         if (botTurn){
@@ -150,26 +150,26 @@ public class BotMinimax extends Bot {
         return score;
     }
 
-    public int countBoard(char[][] board) {
-        int count = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] == 'O') {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
+    // public int countBoard(char[][] board) {
+    //     int count = 0;
+    //     for (int i = 0; i < board.length; i++) {
+    //         for (int j = 0; j < board[0].length; j++) {
+    //             if (board[i][j] == 'O') {
+    //                 count++;
+    //             }
+    //         }
+    //     }
+    //     return count;
+    // }
 
-    public int evaluate(char[][] board, int playerXScore, int playerOScore){
-        int scoreWeight = 1;
-        int controlWeight = 1;
+    // public int evaluate(char[][] board, int playerXScore, int playerOScore){
+    //     int scoreWeight = 1;
+    //     int controlWeight = 1;
 
-        int scoreDifference = objective_function(playerXScore, playerOScore);
-        int boardControl = countBoard(board);
+    //     int scoreDifference = objective_function(playerXScore, playerOScore);
+    //     int boardControl = countBoard(board);
 
-        return (scoreWeight * scoreDifference) + (controlWeight * boardControl);
-    }
+    //     return (scoreWeight * scoreDifference) + (controlWeight * boardControl);
+    // }
 }
     
