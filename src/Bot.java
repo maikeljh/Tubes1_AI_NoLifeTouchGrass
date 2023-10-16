@@ -1,49 +1,82 @@
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import java.util.Pair;
 
-public class Bot {
-    private String algorithm;
-
-    public Bot(String algorithm){
-        this.algorithm = algorithm;
-    }
-
+public abstract class Bot {
     public int objective_function(int playerXScore, int playerOScore){
         return playerOScore - playerXScore;
     }
 
-    public int[] minimax_search(){
-        return new int[]{(int) (Math.random()*8), (int) (Math.random()*8)};
-    }
+    public abstract int[] move(int playerXScore, int playerOScore, int roundsLeft, Button[][] buttons);
 
-    public int[] beam_search(){
-        return new int[]{(int) (Math.random()*8), (int) (Math.random()*8)};
-    }
-
-    public int[] genetic_search(){
-        return new int[]{(int) (Math.random()*8), (int) (Math.random()*8)};
-    }
-
-    public int[] move(int playerXScore, int playerOScore, int roundsLeft, Button[][] buttons) {
-        // Create temporary board array for search
-        String[][] board = new String[buttons.length][buttons[0].length];
-        for (int i = 0; i < buttons.length; i++) {
-            for (int j = 0; j < buttons[i].length; j++) {
-                board[i][j] = buttons[i][j].getText();
-            }
-        }
-
-        // Search based on picked algorithm
-        if (this.algorithm.equals("Minimax")){
-            return minimax_search();
-        } else if (this.algorithm.equals("Beam Search")){
-            return beam_search();
-        } else if (this.algorithm.equals("Genetic Algorithm")){
-            return genetic_search();
+    public boolean borderCheck(int row, int col){
+        if (row >= 0 && row < 8 && col >= 0 && col < 8){
+            return true;
         } else {
-            new Alert(Alert.AlertType.ERROR, "Invalid Algorithm. Exiting.").showAndWait();
-            System.exit(1);
-            return null;
+            return false;
+        }
+    }
+
+    public void checkAdjacency(char[][] board, Pair coor, String currentMove){
+        int row = coor.getKey();
+        int col = coor.getValue();
+
+        if (currentMove.equals("Player")){
+            // Under
+            if (borderCheck(row-1, col)){
+                if (board[row-1][col] == 'O'){
+                    board[row-1][col] = 'O';
+                }
+            }
+
+            // Above
+            if (borderCheck(row-1, col)){
+                if (board[row+1][col] == 'O'){
+                    board[row+1][col] = 'O';
+                }
+            }
+            
+            // Left
+            if (borderCheck(row, col-1)){
+                if (board[row][col-1] == 'O'){
+                    board[row][col-1] = 'O';
+                }
+            }
+
+            // Right
+            if (borderCheck(row, col+1)){
+                if (board[row][col+1] == 'O'){
+                    board[row][col+1] = 'O';
+                }
+            }
+        } else {
+            // For Bot
+            // Under
+            if (borderCheck(row-1, col)){
+                if (board[row-1][col] == 'X'){
+                    board[row-1][col] = 'X';
+                }
+            }
+
+            // Above
+            if (borderCheck(row-1, col)){
+                if (board[row+1][col] == 'X'){
+                    board[row+1][col] = 'X';
+                }
+            }
+            
+            // Left
+            if (borderCheck(row, col-1)){
+                if (board[row][col-1] == 'X'){
+                    board[row][col-1] = 'X';
+                }
+            }
+
+            // Right
+            if (borderCheck(row, col+1)){
+                if (board[row][col+1] == 'X'){
+                    board[row][col+1] = 'X';
+                }
+            }
         }
     }
 }
