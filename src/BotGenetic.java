@@ -1,8 +1,7 @@
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import java.util.Random;
 import java.util.Arrays;
-import java.util.Math;
+import javafx.util.Pair;
 
 public class BotGenetic extends Bot {
     public int[] genetic_search(char[][] board, int roundsLeft){
@@ -12,7 +11,10 @@ public class BotGenetic extends Bot {
         double[] roulette = new double[population_size];
 
         // Generate population
-        Population[] pop = new Population[population_size](roundsLeft);
+        Population[] pop = new Population[population_size];
+        for (int i = 0; i < population_size; i++) {
+            pop[i] = new Population(roundsLeft);
+        }
         for(int i = 0; i < population_size; i++){
             pop[i].randomize();
         }
@@ -29,21 +31,21 @@ public class BotGenetic extends Bot {
 
             // Calculate total fitness
             double total_fitness = 0;
-            for(int i = 0; i < population_size; i++){
-                total_fitness += pop[i].getFitness();
+            for(int j = 0; j < population_size; j++){
+                total_fitness += pop[j].getFitness();
             }
 
             // Create roulette
-            for(int i = 0; i < population_size; i++){
-                roulette[i] = pop[i].getFitness() / total_fitness;
+            for(int j = 0; j < population_size; j++){
+                roulette[j] = pop[j].getFitness() / total_fitness;
             }
             Arrays.sort(roulette);
-            for(int i = 1; i < population_size; i++){
-                roulette[i] += roulette[i-1];
+            for(int j = 1; j < population_size; j++){
+                roulette[j] += roulette[j-1];
             }
 
             // Select parents
-            for(int i = 0; i < population_size; i++){
+            for(int j = 0; j < population_size; j++){
                 double random = Math.random();
                 int choosenIdx = 0;
                 while(random > roulette[choosenIdx]) {
@@ -55,19 +57,19 @@ public class BotGenetic extends Bot {
             // Crossover
             Random random = new Random();
             int idxCross = random.nextInt(roundsLeft);
-            for(int i = 1; i < population_size; i+=2){
-                swapEncode(newPop[i-1], newPop[i]);
+            for(int j = 1; j < population_size; j+=2){
+                newPop[j-1].swapEncode(newPop[j], idxCross);
             }
 
             // Mutation
             int idxMutation = random.nextInt(roundsLeft);
-            for(int i = 0; i < population_size; i++){
-                int randomNumber = random.nextInt(newPop.getSize() - idxMutation);
-                newPop.setEncode(randomNumber, idxMutation);
+            for(int j = 0; j < population_size; j++){
+                int randomNumber = random.nextInt(newPop[j].getSize() - idxMutation);
+                newPop[j].setEncode(randomNumber, idxMutation);
             }
 
             // Set new population
-            pop = Arrays.copyof(newPop, population_size);
+            pop = Arrays.copyOf(newPop, population_size);
         }
 
         // Calculate last fitness
@@ -76,7 +78,7 @@ public class BotGenetic extends Bot {
         }
 
         // Return optimal solution
-        Population solution;
+        Population solution = new Population();
         int maxFitness = -64;
         for(int i = 0; i < population_size; i++){
             if(pop[i].getFitness() > maxFitness){
@@ -85,7 +87,10 @@ public class BotGenetic extends Bot {
         }
 
         int idxMove = solution.getEncode()[0];
-        return this.getCoordinate(board, idxMove);
+        Pair result = this.getCoordinate(board, idxMove);
+        int[] answer = {(int) result.getKey(), (int)result.getValue()};
+
+        return answer;
     }
 
     public int[] move(int playerXScore, int playerOScore, int roundsLeft, Button[][] buttons) {
@@ -93,7 +98,7 @@ public class BotGenetic extends Bot {
         char[][] board = new char[buttons.length][buttons[0].length];
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
-                board[i][j] = buttons[i][j].getText();
+                board[i][j] = buttons[i][j].getText().charAt(0);
             }
         }
 
@@ -104,7 +109,7 @@ public class BotGenetic extends Bot {
         int x = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(boardCoor[i][j] == ''){
+                if(boardCoor[i][j] == ' '){
                     x++;
                 }
                 if(x == position){
@@ -112,19 +117,21 @@ public class BotGenetic extends Bot {
                 }
             }
         }
+
+        return null;
     }
 
     public int fitness_function(char[][] board, Population population){
         int[] encode = population.getEncode();
-        char[][] tempBoard = Arrays.copyof()
+//        char[][] tempBoard = Arrays.copyof()
         // Simulate game based on population representation
         for(int i = 0; i < population.getSize(); i++){
             Pair currentCoor = this.getCoordinate(board, encode[i]);
             if(i % 2 == 0) {
-                board[currentCoor.getKey()][currentCoor.getValue()] = 'O';
+                board[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'O';
                 checkAdjacency(board, currentCoor, "Bot");
             } else {
-                board[currentCoor.getKey()][currentCoor.getValue()] = 'X';
+                board[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'X';
                 checkAdjacency(board, currentCoor, "Player");
             }
         }
