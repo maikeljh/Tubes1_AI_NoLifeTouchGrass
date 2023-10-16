@@ -29,7 +29,7 @@ public abstract class Bot {
             }
 
             // Above
-            if (borderCheck(row-1, col)){
+            if (borderCheck(row+1, col)){
                 if (board[row+1][col] == 'O'){
                     board[row+1][col] = 'X';
                 }
@@ -58,7 +58,7 @@ public abstract class Bot {
             }
 
             // Above
-            if (borderCheck(row-1, col)){
+            if (borderCheck(row+1, col)){
                 if (board[row+1][col] == 'X'){
                     board[row+1][col] = 'O';
                 }
