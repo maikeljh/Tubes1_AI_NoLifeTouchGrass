@@ -17,7 +17,8 @@ public class BotBeamSearch extends Bot {
         // Ketiga, pilih score top 5 (Mungkin sort (?))
         // Top 5 di beam search lagi sampe dapet nilai ujung sampe finishnya TERBESAR
         // Nilai terbesar adalah picked path yang dipake buat jalan.
-        // Player jalan, new initial value, rinse and repeat. 
+        // Player jalan, new initial value, rinse and repeat.
+        return null;
     }
 
     public int objective_value(){
@@ -28,7 +29,7 @@ public class BotBeamSearch extends Bot {
         char[][] board = new char[buttons.length][buttons[0].length];
         for (int i = 0; i < buttons.length; i++) {
             for (int j = 0; j < buttons[i].length; j++) {
-                board[i][j] = buttons[i][j].getText();
+                // board[i][j] = buttons[i][j].getText();
             }
         }
 
