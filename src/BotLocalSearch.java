@@ -109,7 +109,8 @@ public class BotLocalSearch extends Bot {
                 }
             }
         }
-        return Pair<Integer, Integer> best = new Pair<>(rol, col);
+        Pair<Integer, Integer> best = new Pair<>(rol, col);
+        return best;
     }
 
 

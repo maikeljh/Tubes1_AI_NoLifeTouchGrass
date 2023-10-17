@@ -51,7 +51,7 @@ public class InputFrameController{
         this.numberOfRounds.getSelectionModel().select(0);
 
         ObservableList<String> algorithmOptionsDropdown = FXCollections.observableArrayList(
-                "", "Minimax", "Beam Search", "Genetic Algorithm");
+                "", "Minimax", "Local Search", "Genetic Algorithm");
         this.algorithmOptions.setItems(algorithmOptionsDropdown);
         this.algorithmOptions.getSelectionModel().select(0);
     }
