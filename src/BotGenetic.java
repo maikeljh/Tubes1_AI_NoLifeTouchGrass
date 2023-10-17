@@ -3,12 +3,31 @@ import java.util.Random;
 import java.util.Arrays;
 import javafx.util.Pair;
 
+/**
+ * BotGenetic class.  It uses genetic algorithm to evaluate 
+ * best movement for current state
+ * @author Michael Jonathan Halim 13521124
+ * 
+ */
 public class BotGenetic extends Bot {
+    /**
+     * Constructor
+     * @param ownedSymbol Bot's symbol
+     * @param enemySymbol Enemy's symbol
+     *
+     */
     public BotGenetic(char ownedSymbol, char enemySymbol) {
         this.ownedSymbol = ownedSymbol;
         this.enemySymbol = enemySymbol;
     }
 
+    /**
+     * Main function to find best movement with genetic algorithm
+     * @param board Game's board containing X and O symbols
+     * @param roundsLeft Remaining rounds
+     * @return int[]
+     * 
+     */
     public int[] genetic_search(char[][] board, int roundsLeft){
         // Constants
         int population_size = 1000;
@@ -16,33 +35,33 @@ public class BotGenetic extends Bot {
         double[] roulette = new double[population_size];
 
         // Generate population
-        Population[] pop = new Population[population_size];
+        Chromosome[] population = new Chromosome[population_size];
         for (int i = 0; i < population_size; i++) {
-            pop[i] = new Population(roundsLeft);
+            population[i] = new Chromosome(roundsLeft);
         }
         for(int i = 0; i < population_size; i++){
-            pop[i].randomize();
+            population[i].randomize();
         }
 
         // Main GA
         for (int i = 0; i < cycles; i++){
             // Calculate Fitness
             for(int j = 0; j < population_size; j++){
-                pop[j].setFitness(fitness_function(board, pop[j]));
+                population[j].setFitness(fitness_function(board, population[j]));
             }
 
             // Selection
-            Population[] newPop = new Population[population_size];
+            Chromosome[] newPop = new Chromosome[population_size];
 
             // Calculate total fitness
             double total_fitness = 0;
             for(int j = 0; j < population_size; j++){
-                total_fitness += pop[j].getFitness();
+                total_fitness += population[j].getFitness();
             }
 
             // Create roulette
             for(int j = 0; j < population_size; j++){
-                roulette[j] = pop[j].getFitness() / total_fitness;
+                roulette[j] = population[j].getFitness() / total_fitness;
             }
             Arrays.sort(roulette);
             for(int j = 1; j < population_size; j++){
@@ -56,7 +75,7 @@ public class BotGenetic extends Bot {
                 while(random > roulette[choosenIdx]) {
                     choosenIdx++;
                 }
-                newPop[j] = pop[choosenIdx];
+                newPop[j] = population[choosenIdx];
             }
 
             // Crossover
@@ -74,20 +93,20 @@ public class BotGenetic extends Bot {
             }
 
             // Set new population
-            pop = Arrays.copyOf(newPop, population_size);
+            population = Arrays.copyOf(newPop, population_size);
         }
 
         // Calculate last fitness
         for(int j = 0; j < population_size; j++){
-            pop[j].setFitness(fitness_function(board, pop[j]));
+            population[j].setFitness(fitness_function(board, population[j]));
         }
 
         // Return optimal solution
-        Population solution = new Population();
+        Chromosome solution = new Chromosome();
         int maxFitness = -64;
         for(int i = 0; i < population_size; i++){
-            if(pop[i].getFitness() > maxFitness){
-                solution = pop[i];
+            if(population[i].getFitness() > maxFitness){
+                solution = population[i];
             }
         }
 
@@ -98,28 +117,32 @@ public class BotGenetic extends Bot {
         return answer;
     }
 
-    public int[] move(int playerXScore, int playerOScore, int roundsLeft, Button[][] buttons) {
+    /**
+     * Function that returns the choosen move based on genetic algorithm
+     * @param roundsLeft Remaining rounds
+     * @param buttons Game board buttons containing O and X symbols
+     * @return int[]
+     *
+     */
+    public int[] move(int roundsLeft, Button[][] buttons) {
         // Create temporary board array for search
-        char[][] board = new char[buttons.length][buttons[0].length];
-        for (int i = 0; i < buttons.length; i++) {
-            for (int j = 0; j < buttons[i].length; j++) {
-                String buttonText = buttons[i][j].getText();
-                if (buttonText.isEmpty()) {
-                    board[i][j] = ' ';
-                } else {
-                    board[i][j] = buttonText.charAt(0);
-                }
-            }
-        }
+        char[][] board = createBoardFromButtons(buttons);
 
         return genetic_search(board, roundsLeft);
     }
 
-    public Pair getCoordinate(char[][] boardCoor, int position){
+    /**
+     * Function that get coordinate of board game based on position (index of empty cells starting from 1)
+     * @param board Game's board containing X and O symbols
+     * @param position Index of empty cells in board starting from 1
+     * @return Pair or null
+     *
+     */
+    public Pair getCoordinate(char[][] board, int position){
         int x = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(boardCoor[i][j] == ' '){
+                if(board[i][j] == ' '){
                     x++;
                 }
                 if(x == position){
@@ -131,94 +154,30 @@ public class BotGenetic extends Bot {
         return null;
     }
 
-    public int fitness_function(char[][] board, Population population){
-        int[] encode = population.getEncode();
-        char[][] tempBoard = new char[board.length][board[0].length];
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                tempBoard[i][j] = board[i][j];
-            }
-        }
-        // Simulate game based on population representation
-        for(int i = 0; i < population.getSize(); i++){
+    /**
+     * Function that calculate fitness value of a game state
+     * @param board Game's board containing X and O symbols
+     * @param chromosome A proposed solution of the problem
+     * @return int
+     *
+     */
+    public int fitness_function(char[][] board, Chromosome chromosome){
+        int[] encode = chromosome.getEncode();
+        char[][] tempBoard = copyBoard(board);
+
+        // Simulate game based on chromosome representation
+        for(int i = 0; i < chromosome.getSize(); i++){
             Pair currentCoor = this.getCoordinate(tempBoard, encode[i]);
             if(i % 2 == 0) {
                 tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = this.ownedSymbol;
                 checkAdjacency(tempBoard, currentCoor, "Bot");
             } else {
                 tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = this.enemySymbol;
-                checkAdjacency(tempBoard, currentCoor, "Player");
+                checkAdjacency(tempBoard, currentCoor, "Enemy");
             }
         }
 
         // Calculate objective function
-        int ownedScore = 0;
-        int enemyScore = 0;
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                if(tempBoard[i][j] == this.ownedSymbol){
-                    ownedScore++;
-                } else {
-                    enemyScore++;
-                }
-            }
-        }
-
-        return objective_function(enemyScore, ownedScore);
-    }
-}
-
-class Population {
-    // Attributes
-    private int[] encode;
-    private int size;
-    private int fitness_value;
-
-    // Constructor
-    public Population() {
-        this.size = 56;
-        this.encode = new int[this.size];
-    }
-
-    public Population(int size){
-        this.size = size;
-        this.encode = new int[this.size];
-    }
-
-    // Methods
-    public void randomize() {
-        Random random = new Random(System.currentTimeMillis());
-
-        for(int i = 0; i < this.size; i++){
-            this.encode[i] = random.nextInt(this.size - i) + 1;
-        }
-    }
-
-    public int getSize(){
-        return this.size;
-    }
-
-    public int[] getEncode(){
-        return this.encode;
-    }
-
-    public int getFitness(){
-        return this.fitness_value;
-    }
-
-    public void setFitness(int fitness_value){
-        this.fitness_value = fitness_value;
-    }
-
-    public void setEncode(int action, int idx){
-        this.encode[idx] = action;
-    }
-
-    public void swapEncode(Population other, int idx){
-        for(int i = idx; i < this.size; i++){
-            int temp = this.encode[i];
-            this.encode[i] = other.getEncode()[i];
-            other.setEncode(temp, i);
-        }
+        return objective_value(tempBoard);
     }
 }

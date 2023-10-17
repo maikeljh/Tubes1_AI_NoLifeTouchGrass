@@ -66,7 +66,7 @@ public class InputFrameController{
 
 
     /**
-     * Reset player1 and player2 text fields and reset numberOfRounds dropdown to default value
+     * Reset player1 and player2 text fields and reset dropdowns to default value
      * if reset button is clicked.
      *
      */

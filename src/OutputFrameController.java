@@ -70,6 +70,8 @@ public class OutputFrameController {
      * @param name2 Name of Player 2 (Bot).
      * @param rounds The number of rounds chosen to be played.
      * @param isOFirst True if O is first, false otherwise.
+     * @param pickedAlgorithm1 Choosen algorithm for symbol X
+     * @param pickedAlgorithm2 Choosen algorithm for symbol O
      *
      */
     void getInput(String name1, String name2, String rounds, boolean isOFirst, String pickedAlgorithm1, String pickedAlgorithm2){
@@ -82,7 +84,12 @@ public class OutputFrameController {
         this.pickedAlgorithm2 = pickedAlgorithm2;
     }
 
+    /**
+     * Initializes bots and player, choosen algorithm for bot(s), 
+     * first turn, and move bot if bot has first turn
+     */
     public void startGame() {
+        // Define symbols
         char x = 'X';
         char o = 'O';
 
@@ -434,8 +441,11 @@ public class OutputFrameController {
         primaryStage.show();
     }
 
+    /**
+     * Move action for bot 1 (not player)
+     */
     private void moveBot1() {
-        int[] botMove = this.bot1.move(this.playerXScore, this.playerOScore, this.roundsLeft, this.buttons);
+        int[] botMove = this.bot1.move(this.roundsLeft, this.buttons);
         int i = botMove[0];
         int j = botMove[1];
 
@@ -451,8 +461,11 @@ public class OutputFrameController {
         this.selectedCoordinates(i, j);
     }
 
+    /**
+     * Move action for bot 2
+    */
     private void moveBot2() {
-        int[] botMove = this.bot2.move(this.playerXScore, this.playerOScore, this.roundsLeft, this.buttons);
+        int[] botMove = this.bot2.move(this.roundsLeft, this.buttons);
         int i = botMove[0];
         int j = botMove[1];
 
