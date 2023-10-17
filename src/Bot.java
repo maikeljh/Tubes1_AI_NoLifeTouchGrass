@@ -82,4 +82,16 @@ public abstract class Bot {
             }
         }
     }
+
+    public char[][] copyBoard(char[][] originalBoard){
+        int rows = originalBoard.length;
+        int cols = originalBoard[0].length;
+        char[][] copy = new char[rows][cols];
+        for (int i = 0; i< rows; i++){
+            for (int j = 0; j< cols; j++){
+                copy[i][j] = originalBoard[i][j];
+            }
+        }
+        return copy;
+    }
 }
