@@ -4,6 +4,11 @@ import java.util.Arrays;
 import javafx.util.Pair;
 
 public class BotGenetic extends Bot {
+    public BotGenetic(char ownedSymbol, char enemySymbol) {
+        this.ownedSymbol = ownedSymbol;
+        this.enemySymbol = enemySymbol;
+    }
+
     public int[] genetic_search(char[][] board, int roundsLeft){
         // Constants
         int population_size = 1000;
@@ -138,28 +143,28 @@ public class BotGenetic extends Bot {
         for(int i = 0; i < population.getSize(); i++){
             Pair currentCoor = this.getCoordinate(tempBoard, encode[i]);
             if(i % 2 == 0) {
-                tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'O';
+                tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = this.ownedSymbol;
                 checkAdjacency(tempBoard, currentCoor, "Bot");
             } else {
-                tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = 'X';
+                tempBoard[(int) currentCoor.getKey()][(int) currentCoor.getValue()] = this.enemySymbol;
                 checkAdjacency(tempBoard, currentCoor, "Player");
             }
         }
 
         // Calculate objective function
-        int playerOScore = 0;
-        int playerXScore = 0;
+        int ownedScore = 0;
+        int enemyScore = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(tempBoard[i][j] == 'O'){
-                    playerOScore++;
+                if(tempBoard[i][j] == this.ownedSymbol){
+                    ownedScore++;
                 } else {
-                    playerXScore++;
+                    enemyScore++;
                 }
             }
         }
 
-        return objective_function(playerXScore, playerOScore);
+        return objective_function(enemyScore, ownedScore);
     }
 }
 
