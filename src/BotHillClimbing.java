@@ -3,14 +3,19 @@ import javafx.scene.control.Button;
 import java.util.Random;
 import javafx.util.Pair;
 
-public class BotLocalSearch extends Bot {
+public class BotHillClimbing extends Bot {
+    public BotHillClimbing(char ownedSymbol, char enemySymbol) {
+        this.ownedSymbol = ownedSymbol;
+        this.enemySymbol = enemySymbol;
+    }
+
     public int[] local_search(char[][] board) {
-        // Local search initial state
+        // Hill Climbing initial state
         int playerOScore = 0;
         int playerXScore = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(board[i][j] == 'O'){
+                if(board[i][j] == this.ownedSymbol){
                     playerOScore++;
                 } else {
                     playerXScore++;
@@ -30,8 +35,6 @@ public class BotLocalSearch extends Bot {
         int[] result = {(int) bestSucc.getKey(), (int)bestSucc.getValue()};
 
         return result;
-
-
     }
 
     public int[][] generate_successors(char[][]board, int currentObjValue){
@@ -68,7 +71,7 @@ public class BotLocalSearch extends Bot {
         int playerXScore = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(board[i][j] == 'O'){
+                if(board[i][j] == this.ownedSymbol){
                     playerOScore++;
                 } else {
                     playerXScore++;

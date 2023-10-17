@@ -54,12 +54,12 @@ public class InputFrameController{
         this.numberOfRounds.getSelectionModel().select(0);
 
         ObservableList<String> algorithmOptions1Dropdown = FXCollections.observableArrayList(
-                "", "Player", "Minimax", "Local Search", "Genetic Algorithm");
+                "", "Player", "Minimax", "Hill Climbing", "Genetic Algorithm");
         this.algorithmOptions1.setItems(algorithmOptions1Dropdown);
         this.algorithmOptions1.getSelectionModel().select(0);
 
         ObservableList<String> algorithmOptions2Dropdown = FXCollections.observableArrayList(
-                "", "Minimax", "Local Search", "Genetic Algorithm");
+                "", "Minimax", "Hill Climbing", "Genetic Algorithm");
         this.algorithmOptions2.setItems(algorithmOptions2Dropdown);
         this.algorithmOptions2.getSelectionModel().select(0);
     }

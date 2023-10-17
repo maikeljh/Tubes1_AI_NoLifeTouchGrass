@@ -94,6 +94,8 @@ public class OutputFrameController {
                 this.bot2 = new BotMinimax(o, x);
             } else if (this.pickedAlgorithm2.equals("Genetic Algorithm")) {
                 this.bot2 = new BotGenetic(o, x);
+            } else {
+                this.bot2 = new BotHillClimbing(o, x);
             }
         } else if (this.pickedAlgorithm1.equals("Genetic Algorithm")) {
             this.bot1 = new BotGenetic(x, o);
@@ -102,6 +104,18 @@ public class OutputFrameController {
                 this.bot2 = new BotMinimax(o, x);
             } else if (this.pickedAlgorithm2.equals("Genetic Algorithm")) {
                 this.bot2 = new BotGenetic(o, x);
+            } else {
+                this.bot2 = new BotHillClimbing(o, x);
+            }
+        } else if (this.pickedAlgorithm1.equals("Hill Climbing")) {
+            this.bot1 = new BotHillClimbing(x, o);
+            this.isAllBot = true;
+            if(this.pickedAlgorithm2.equals("Minimax")){
+                this.bot2 = new BotMinimax(o, x);
+            } else if (this.pickedAlgorithm2.equals("Genetic Algorithm")) {
+                this.bot2 = new BotGenetic(o, x);
+            } else {
+                this.bot2 = new BotHillClimbing(o, x);
             }
         } else {
             this.isAllBot = false;
@@ -109,6 +123,8 @@ public class OutputFrameController {
                 this.bot2 = new BotMinimax(o, x);
             } else if (this.pickedAlgorithm2.equals("Genetic Algorithm")) {
                 this.bot2 = new BotGenetic(o, x);
+            } else {
+                this.bot2 = new BotHillClimbing(o, x);
             }
         }
 
