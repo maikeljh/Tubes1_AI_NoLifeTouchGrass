@@ -20,7 +20,7 @@ public abstract class Bot {
         int row = (int) coor.getKey();
         int col = (int) coor.getValue();
 
-        if (currentMove.equals("Bot")){
+        if (currentMove.equals("Player")){
             // Under
             if (borderCheck(row-1, col)){
                 if (board[row-1][col] == 'O'){
