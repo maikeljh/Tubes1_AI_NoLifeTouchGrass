@@ -7,6 +7,7 @@ import javafx.util.Pair;
 public class BotMinimax extends Bot {
     private long startTime;
 
+    //Minimax algorithm
     public int minimax_search(char[][] board, int depth, int alpha, int beta, int playerXScore, int playerOScore, boolean botTurn){
         int[] tempScore;
         int row = board.length;
@@ -16,6 +17,7 @@ public class BotMinimax extends Bot {
             return objective_function(playerXScore, playerOScore);
         }
 
+        //Maximizing
         if (botTurn){
             int bestScore = Integer.MIN_VALUE;
             Pair[] beam = this.evaluate_beam(board, true, 5);
@@ -195,6 +197,7 @@ public class BotMinimax extends Bot {
         int row = board.length;
         int col = board[0].length;
 
+        //fill board
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 String buttonText = buttons[i][j].getText();
@@ -242,6 +245,7 @@ public class BotMinimax extends Bot {
         int scoreBot = 0;
         int[] score = new int[2];
     
+        // calculate bot and player score
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 if (board[i][j] == 'X') {
