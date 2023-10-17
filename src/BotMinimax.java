@@ -7,13 +7,18 @@ import javafx.util.Pair;
 public class BotMinimax extends Bot {
     private long startTime;
 
+    public BotMinimax(char ownedSymbol, char enemySymbol) {
+        this.ownedSymbol = ownedSymbol;
+        this.enemySymbol = enemySymbol;
+    }
+
     //Minimax algorithm
     public int minimax_search(char[][] board, int depth, int alpha, int beta, int playerXScore, int playerOScore, boolean botTurn){
         int[] tempScore;
         int row = board.length;
         int col = board[0].length;
 
-        if (depth == 11){
+        if (depth == 11 || checkFull(board)){
             return objective_function(playerXScore, playerOScore);
         }
 
@@ -30,7 +35,7 @@ public class BotMinimax extends Bot {
                         System.arraycopy(board[a], 0, tempBoard[a], 0, col);
                     }
 
-                    tempBoard[i][j] = 'O';
+                    tempBoard[i][j] = this.ownedSymbol;
                     Pair currentCoor = new Pair(i, j);
                     checkAdjacency(tempBoard, currentCoor, "Bot");
 
@@ -60,7 +65,7 @@ public class BotMinimax extends Bot {
                         System.arraycopy(board[a], 0, tempBoard[a], 0, col);
                     }
 
-                    tempBoard[i][j] = 'X';
+                    tempBoard[i][j] = this.enemySymbol;
                     Pair currentCoor = new Pair(i, j);
                     checkAdjacency(tempBoard, currentCoor, "Player");
 
@@ -108,7 +113,7 @@ public class BotMinimax extends Bot {
                         for (int a = 0; a < row; a++) {
                             System.arraycopy(board[a], 0, tempBoard[a], 0, col);
                         }
-                        tempBoard[i][j] = 'O';
+                        tempBoard[i][j] = this.ownedSymbol;
                         Pair currentCoor = new Pair(i, j);
                         checkAdjacency(tempBoard, currentCoor, "Bot");
 
@@ -158,7 +163,7 @@ public class BotMinimax extends Bot {
                         for (int a = 0; a < row; a++) {
                             System.arraycopy(board[a], 0, tempBoard[a], 0, col);
                         }
-                        tempBoard[i][j] = 'X';
+                        tempBoard[i][j] = this.enemySymbol;
                         Pair currentCoor = new Pair(i, j);
                         checkAdjacency(tempBoard, currentCoor, "Player");
 
@@ -219,7 +224,7 @@ public class BotMinimax extends Bot {
                     System.arraycopy(board[a], 0, tempBoard[a], 0, col);
                 }
 
-                tempBoard[i][j] = 'O';
+                tempBoard[i][j] = this.ownedSymbol;
                 Pair currentCoor = new Pair(i, j);
                 checkAdjacency(tempBoard, currentCoor, "Bot");
 
@@ -248,9 +253,9 @@ public class BotMinimax extends Bot {
         // calculate bot and player score
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] == 'X') {
+                if (board[i][j] == this.enemySymbol) {
                     scorePlayer++;
-                } else if (board[i][j] == 'O') {
+                } else if (board[i][j] == this.ownedSymbol) {
                     scoreBot++;
                 }
             }
@@ -258,6 +263,18 @@ public class BotMinimax extends Bot {
         score[0] = scoreBot;
         score[1] = scorePlayer;
         return score;
+    }
+
+    public boolean checkFull(char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
     

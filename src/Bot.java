@@ -2,6 +2,9 @@ import javafx.scene.control.Button;
 import javafx.util.Pair;
 
 public abstract class Bot {
+    public char ownedSymbol;
+    public char enemySymbol;
+
     public int objective_function(int playerXScore, int playerOScore){
         return playerOScore - playerXScore;
     }
@@ -23,58 +26,58 @@ public abstract class Bot {
         if (currentMove.equals("Player")){
             // Under
             if (borderCheck(row-1, col)){
-                if (board[row-1][col] == 'O'){
-                    board[row-1][col] = 'X';
+                if (board[row-1][col] == ownedSymbol){
+                    board[row-1][col] = enemySymbol;
                 }
             }
 
             // Above
             if (borderCheck(row+1, col)){
-                if (board[row+1][col] == 'O'){
-                    board[row+1][col] = 'X';
+                if (board[row+1][col] == ownedSymbol){
+                    board[row+1][col] = enemySymbol;
                 }
             }
             
             // Left
             if (borderCheck(row, col-1)){
-                if (board[row][col-1] == 'O'){
-                    board[row][col-1] = 'X';
+                if (board[row][col-1] == ownedSymbol){
+                    board[row][col-1] = enemySymbol;
                 }
             }
 
             // Right
             if (borderCheck(row, col+1)){
-                if (board[row][col+1] == 'O'){
-                    board[row][col+1] = 'X';
+                if (board[row][col+1] == ownedSymbol){
+                    board[row][col+1] = enemySymbol;
                 }
             }
         } else {
             // For Bot
             // Under
             if (borderCheck(row-1, col)){
-                if (board[row-1][col] == 'X'){
-                    board[row-1][col] = 'O';
+                if (board[row-1][col] == enemySymbol){
+                    board[row-1][col] = ownedSymbol;
                 }
             }
 
             // Above
             if (borderCheck(row+1, col)){
-                if (board[row+1][col] == 'X'){
-                    board[row+1][col] = 'O';
+                if (board[row+1][col] == enemySymbol){
+                    board[row+1][col] = ownedSymbol;
                 }
             }
             
             // Left
             if (borderCheck(row, col-1)){
-                if (board[row][col-1] == 'X'){
-                    board[row][col-1] = 'O';
+                if (board[row][col-1] == enemySymbol){
+                    board[row][col-1] = ownedSymbol;
                 }
             }
 
             // Right
             if (borderCheck(row, col+1)){
-                if (board[row][col+1] == 'X'){
-                    board[row][col+1] = 'O';
+                if (board[row][col+1] == enemySymbol){
+                    board[row][col+1] = ownedSymbol;
                 }
             }
         }

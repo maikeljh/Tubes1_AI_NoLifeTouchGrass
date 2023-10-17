@@ -4,6 +4,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -22,7 +23,7 @@ import java.io.IOException;
  */
 public class InputFrameController{
 
-    public CheckBox isBotFirst;
+    public CheckBox isOFirst;
 
     @FXML
     private TextField player1;
@@ -34,8 +35,10 @@ public class InputFrameController{
     private ComboBox<String> numberOfRounds;
 
     @FXML
-    private ComboBox<String> algorithmOptions;
+    private ComboBox<String> algorithmOptions1;
 
+    @FXML
+    private ComboBox<String> algorithmOptions2;
 
     /**
      * Initialize the dropdown ComboBox with a list of items that are allowed to be selected.
@@ -50,10 +53,15 @@ public class InputFrameController{
         this.numberOfRounds.setItems(numberOfRoundsDropdown);
         this.numberOfRounds.getSelectionModel().select(0);
 
-        ObservableList<String> algorithmOptionsDropdown = FXCollections.observableArrayList(
+        ObservableList<String> algorithmOptions1Dropdown = FXCollections.observableArrayList(
+                "", "Player", "Minimax", "Beam Search", "Genetic Algorithm");
+        this.algorithmOptions1.setItems(algorithmOptions1Dropdown);
+        this.algorithmOptions1.getSelectionModel().select(0);
+
+        ObservableList<String> algorithmOptions2Dropdown = FXCollections.observableArrayList(
                 "", "Minimax", "Beam Search", "Genetic Algorithm");
-        this.algorithmOptions.setItems(algorithmOptionsDropdown);
-        this.algorithmOptions.getSelectionModel().select(0);
+        this.algorithmOptions2.setItems(algorithmOptions2Dropdown);
+        this.algorithmOptions2.getSelectionModel().select(0);
     }
 
 
@@ -67,7 +75,8 @@ public class InputFrameController{
         this.player1.setText("");
         this.player2.setText("");
         this.numberOfRounds.getSelectionModel().select(0);
-        this.algorithmOptions.getSelectionModel().select(0);
+        this.algorithmOptions1.getSelectionModel().select(0);
+        this.algorithmOptions2.getSelectionModel().select(0);
     }
 
 
@@ -90,7 +99,7 @@ public class InputFrameController{
 
             // Get controller of output frame and pass input including player names and number of rounds chosen.
             OutputFrameController outputFC = loader.getController();
-            outputFC.getInput(this.player1.getText(), this.player2.getText(), this.numberOfRounds.getValue(), this.isBotFirst.isSelected(), this.algorithmOptions.getValue());
+            outputFC.getInput(this.player1.getText(), this.player2.getText(), this.numberOfRounds.getValue(), this.isOFirst.isSelected(), this.algorithmOptions1.getValue(), this.algorithmOptions2.getValue());
 
             // Open the new frame.
             Stage secondaryStage = new Stage();
@@ -98,6 +107,9 @@ public class InputFrameController{
             secondaryStage.setScene(new Scene(root));
             secondaryStage.setResizable(true);
             secondaryStage.show();
+
+            // Start the game
+            Platform.runLater(() -> outputFC.startGame());
         }
     }
 
@@ -112,7 +124,8 @@ public class InputFrameController{
         String playerX = this.player1.getText();
         String playerO = this.player2.getText();
         String roundNumber = this.numberOfRounds.getValue();
-        String pickedAlgorithm = this.algorithmOptions.getValue();
+        String pickedAlgorithm1 = this.algorithmOptions1.getValue();
+        String pickedAlgorithm2 = this.algorithmOptions2.getValue();
 
         if (playerX.length() == 0) {
             new Alert(Alert.AlertType.ERROR, "Player 1 name is blank.").showAndWait();
@@ -134,8 +147,13 @@ public class InputFrameController{
             return false;
         }
 
-        if (pickedAlgorithm.length() == 0) {
-            new Alert(Alert.AlertType.ERROR, "Algorithm dropdown menu is blank.").showAndWait();
+        if (pickedAlgorithm1.length() == 0) {
+            new Alert(Alert.AlertType.ERROR, "Algorithm X dropdown menu is blank.").showAndWait();
+            return false;
+        }
+
+        if (pickedAlgorithm2.length() == 0) {
+            new Alert(Alert.AlertType.ERROR, "Algorithm O dropdown menu is blank.").showAndWait();
             return false;
         }
 
