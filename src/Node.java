@@ -8,7 +8,7 @@ public class Node {
 
     public Node(char[][] board){
         this.board = board;
-        this.children = new ArrayList<Node>();
+        this.children = new ArrayList<>();
         this.score = null;
     }
 
