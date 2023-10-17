@@ -23,28 +23,28 @@ public abstract class Bot {
         if (currentMove.equals("Player")){
             // Under
             if (borderCheck(row-1, col)){
-                if (board[row-1][col] == 'O' || board[row-1][col] == ' '){
+                if (board[row-1][col] == 'O'){
                     board[row-1][col] = 'X';
                 }
             }
 
             // Above
             if (borderCheck(row+1, col)){
-                if (board[row+1][col] == 'O' || board[row+1][col] == ' '){
+                if (board[row+1][col] == 'O'){
                     board[row+1][col] = 'X';
                 }
             }
             
             // Left
             if (borderCheck(row, col-1)){
-                if (board[row][col-1] == 'O' || board[row][col-1] == ' '){
+                if (board[row][col-1] == 'O'){
                     board[row][col-1] = 'X';
                 }
             }
 
             // Right
             if (borderCheck(row, col+1)){
-                if (board[row][col+1] == 'O' || board[row][col+1] == ' '){
+                if (board[row][col+1] == 'O'){
                     board[row][col+1] = 'X';
                 }
             }
@@ -52,28 +52,28 @@ public abstract class Bot {
             // For Bot
             // Under
             if (borderCheck(row-1, col)){
-                if (board[row-1][col] == 'X' || board[row-1][col] == ' '){
+                if (board[row-1][col] == 'X'){
                     board[row-1][col] = 'O';
                 }
             }
 
             // Above
             if (borderCheck(row+1, col)){
-                if (board[row+1][col] == 'X' || board[row+1][col] == ' '){
+                if (board[row+1][col] == 'X'){
                     board[row+1][col] = 'O';
                 }
             }
             
             // Left
             if (borderCheck(row, col-1)){
-                if (board[row][col-1] == 'X' || board[row][col-1] == ' '){
+                if (board[row][col-1] == 'X'){
                     board[row][col-1] = 'O';
                 }
             }
 
             // Right
             if (borderCheck(row, col+1)){
-                if (board[row][col+1] == 'X' || board[row][col+1] == ' '){
+                if (board[row][col+1] == 'X'){
                     board[row][col+1] = 'O';
                 }
             }
