@@ -29,9 +29,10 @@ public class BotMinimax extends Bot {
      * @param depth Current tree's depth
      * @param alpha Alpha value for alpha beta pruning
      * @param beta Beta value for alpha beta pruning
-     * @param ownedSymbol Bot's symbol
-     * @param enemySymbol Enemy's symbol
+     * @param ownedScore Bot's score at current state
+     * @param enemyScore Enemy's score at current state
      * @param botTurn Determines if current turn is bot or enemy
+     * @param startTime Start time of the bot
      * @return Pair[]
      *
      */
