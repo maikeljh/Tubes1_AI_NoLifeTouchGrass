@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.List;
 
 /**
  * Chromosome class.  A proposed solution of the problem 
@@ -11,6 +12,7 @@ public class Chromosome {
     private int[] encode;
     private int size;
     private int fitness_value;
+    private TreePath path;
 
     /**
      * Default Constructor
@@ -32,10 +34,24 @@ public class Chromosome {
     }
 
     // Methods
-    public void randomize() {
+    /**
+     * Function to initialize the encoding of chromosome
+     * @param best List of best potential start move
+     *
+     */
+    public void randomize(List<Integer> best) {
         Random random = new Random(System.currentTimeMillis());
 
-        for(int i = 0; i < this.size; i++){
+        // Start with "best" move
+        if(best.size() > 0){
+            int randomIndex = random.nextInt(best.size());
+            this.encode[0] = best.get(randomIndex);
+        } else {
+            this.encode[0] = random.nextInt(this.size) + 1;
+        }
+
+        // Random the remainings
+        for(int i = 1; i < this.size; i++){
             this.encode[i] = random.nextInt(this.size - i) + 1;
         }
     }
@@ -53,6 +69,10 @@ public class Chromosome {
         return this.fitness_value;
     }
 
+    public TreePath getPath(){
+        return this.path;
+    }
+
     // Setter
     public void setFitness(int fitness_value){
         this.fitness_value = fitness_value;
@@ -60,6 +80,10 @@ public class Chromosome {
 
     public void setEncode(int action, int idx){
         this.encode[idx] = action;
+    }
+
+    public void setPath(TreePath path){
+        this.path = path;
     }
 
     /**
