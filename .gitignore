@@ -26,6 +26,3 @@ hs_err_pid*
 out
 
 javafx-sdk-linux
-
-# ignore javafx-sdk
-javafx-sdk/
