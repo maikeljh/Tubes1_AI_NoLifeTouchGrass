@@ -41,7 +41,7 @@ public class BotMinimax extends Bot {
         int col = board[0].length;
 
         // Cut depth tree or if board already full
-        if (depth == 12 || checkFull(board) || System.currentTimeMillis() - startTime >= 4800){
+        if (depth == 11 || checkFull(board) || System.currentTimeMillis() - startTime >= 4800){
             return objective_function(enemyScore, ownedScore);
         }
 
